@@ -1,0 +1,128 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input[type="number"], input[type="text"], input[type="checkbox"] {
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* Styles for remove buttons */
+button.remove-string {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background: hsl(216, 100, 50);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 150ms;
+}
+
+button.remove-string .icon-cross {
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+button.remove-string .icon-cross:before,
+button.remove-string .icon-cross:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 20px;
+    background: #fff;
+    border-radius: 2px;
+}
+
+button.remove-string .icon-cross:before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+button.remove-string .icon-cross:after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+button.remove-string:hover {
+    background: hsl(216, 100, 40);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    width: 20%;
+    text-align: left;
+}
+
+table th {
+    background-color: #f2f2f2;
+}
+
+@media (min-width: 768px) {
+    .steps-container {
+        flex-direction: row;
+        gap: 20px;
+    }
+    .step:first-child {
+        flex: 1;
+    }
+    .step:last-child {
+        flex: 2;
+    }
+}
+
