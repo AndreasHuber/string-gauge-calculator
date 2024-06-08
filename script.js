@@ -5,22 +5,15 @@ document.getElementById('calculate').addEventListener('click', function() {
     const scaleLength = parseFloat(document.getElementById('scale-length').value);
 
     const firstScaleLength = parseFloat(document.getElementById('scale-length-first-string').value);
-    let multiscale = false;
     const lastScaleLength = parseFloat(document.getElementById('scale-length-last-string').value);
-    if (!isNaN(lastScaleLength)) {
-        multiscale = true;
-    }
+    const multiscale = !isNaN(lastScaleLength);
     const stringElements = document.querySelectorAll('.string');
-    let interpolatedScaleLengths = Array.from(stringElements, () => firstScaleLength);
-    if (multiscale) {
-        interpolatedScaleLengths = Array.from(stringElements, (_, i) => 
-            firstScaleLength + (lastScaleLength - firstScaleLength) * (i / (stringElements.length - 1))
-        );
-    }
     
-    const semitoneRatio = Math.pow(2, 1/12);
+    const interpolatedScaleLengths = Array.from(stringElements, (_, i) =>
+        firstScaleLength + (multiscale ? (lastScaleLength - firstScaleLength) * (i / (stringElements.length - 1)) : 0)
+    );
 
-    // Mapping notes to their corresponding semitone values
+    const semitoneRatio = Math.pow(2, 1/12);
     const noteToSemitone = {
         'CB':-1, 'C': 0, 'C#': 1,
         'DB': 1, 'D': 2, 'D#': 3,
@@ -46,7 +39,6 @@ document.getElementById('calculate').addEventListener('click', function() {
             const semitoneDifference = preferredSemitone - targetSemitone;
             let recommendedGauge = referenceGauge * Math.pow(semitoneRatio, semitoneDifference) * (scaleLength / interpolatedScaleLengths[index]);
 
-            // Determine string type
             let type = recommendedGauge < 0.020 ? 'plain' : 'wound';
             if (referenceIsWound && type === 'plain') {
                 recommendedGauge /= 1.2;
@@ -56,7 +48,6 @@ document.getElementById('calculate').addEventListener('click', function() {
 
             const typeCell = stringElement.querySelector('td:nth-child(5)');
             const resultCell = stringElement.querySelector('td:nth-child(4)');
-            // also update td:nth-child(3) with the interpolated scale length if it doesn't contain an input field
             const scaleLengthCell = stringElement.querySelector('td:nth-child(3)');
             if (!scaleLengthCell.querySelector('input')) {
                 scaleLengthCell.textContent = interpolatedScaleLengths[index].toFixed(1);
@@ -92,21 +83,12 @@ function addRemoveButtonListener(button) {
         if (rows.length > 2) {
             row.remove();
 
-            if (rowIndex === 0 && rows.length > 1) {
-                // Move the input field of the third column to the new first row
-                const newFirstRow = rows[1];
+            if ((rowIndex === 0 || rowIndex === rows.length - 1) && rows.length > 1) {
+                const newRow = rowIndex === 0 ? rows[1] : rows[rows.length - 2];
                 const inputField = row.querySelector('td:nth-child(3) input');
                 if (inputField) {
-                    newFirstRow.querySelector('td:nth-child(3)').textContent = ''; // Empty the cell content
-                    newFirstRow.querySelector('td:nth-child(3)').appendChild(inputField);
-                }
-            } else if (rowIndex === rows.length - 1 && rows.length > 1) {
-                // Move the input field of the third column to the new last row
-                const newLastRow = rows[rows.length - 2];
-                const inputField = row.querySelector('td:nth-child(3) input');
-                if (inputField) {
-                    newLastRow.querySelector('td:nth-child(3)').textContent = ''; // Empty the cell content
-                    newLastRow.querySelector('td:nth-child(3)').appendChild(inputField);
+                    newRow.querySelector('td:nth-child(3)').textContent = '';
+                    newRow.querySelector('td:nth-child(3)').appendChild(inputField);
                 }
             }
         }
@@ -119,39 +101,28 @@ function addString(position) {
     newStringRow.className = 'string';
     newStringRow.innerHTML = createStringRow();
 
-    if (position === 'start') {
-        const firstRow = stringsContainer.querySelector('tr.string');
-        const inputField = firstRow.querySelector('td:nth-child(3) input');
-        if (inputField) {
-            firstRow.querySelector('td:nth-child(3)').removeChild(inputField);
-            newStringRow.querySelector('td:nth-child(3)').appendChild(inputField);
-        }
-        stringsContainer.insertBefore(newStringRow, stringsContainer.firstChild.nextSibling); // Insert after the first add-row
-    } else {
-        const lastRow = stringsContainer.querySelector('tr.string:last-child');
-        const inputField = lastRow.querySelector('td:nth-child(3) input');
-        if (inputField) {
-            lastRow.querySelector('td:nth-child(3)').removeChild(inputField);
-            newStringRow.querySelector('td:nth-child(3)').appendChild(inputField);
-        }
-        stringsContainer.insertBefore(newStringRow, stringsContainer.lastChild); // Insert before the last add-row
+    const firstRow = stringsContainer.querySelector('tr.string');
+    const lastRow = stringsContainer.querySelector('tr.string:last-child');
+    const inputField = (position === 'start' ? firstRow : lastRow).querySelector('td:nth-child(3) input');
+
+    if (inputField) {
+        (position === 'start' ? firstRow : lastRow).querySelector('td:nth-child(3)').removeChild(inputField);
+        newStringRow.querySelector('td:nth-child(3)').appendChild(inputField);
     }
 
-    // Add event listener for the new remove button
+    stringsContainer.insertBefore(newStringRow, position === 'start' ? stringsContainer.firstChild.nextSibling : stringsContainer.lastChild);
+
     addRemoveButtonListener(newStringRow.querySelector('.remove-string'));
 }
 
-// Add event listener for adding string at the end
 document.querySelector('.add-end').addEventListener('click', function() {
     addString('end');
 });
 
-// Add event listener for adding string at the start
 document.querySelector('.add-front').addEventListener('click', function() {
     addString('start');
 });
 
-// Add event listeners for the initial remove buttons
 document.querySelectorAll('.remove-string').forEach(button => {
     addRemoveButtonListener(button);
 });
