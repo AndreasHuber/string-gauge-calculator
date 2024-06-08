@@ -2,13 +2,17 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: Arial, sans-serif;
+    font-family: sans-serif;
     background-color: #fff;
 }
 
-h1 {
+h1, h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
+}
+
+p {
+    text-align: center;
 }
 
 .steps-container {
@@ -24,11 +28,14 @@ h1 {
 }
 
 label {
-    margin-bottom: 5px;
+    float: left;
+}
+
+label:not(:has(input)) {
+    margin-top: 8px;
 }
 
 input[type="number"], input[type="text"], input[type="checkbox"] {
-    margin-bottom: 10px;
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
@@ -38,79 +45,56 @@ button {
     display: block;
     width: 100%;
     padding: 10px;
-    background: #007BFF;
-    color: #fff;
+    background: #f2f2f2;
+    color: #000000;
     border: none;
-    border-radius: 5px;
+    border-radius: 0px;
     cursor: pointer;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
+    max-width: 1024px;
 }
 
 button:hover {
-    background: #0056b3;
+    background: #a7a7a7;
 }
 
-/* Styles for remove buttons */
-button.remove-string {
-    margin: 0;
-    border: 0;
-    padding: 0;
-    background: hsl(216, 100, 50);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 150ms;
-}
-
-button.remove-string .icon-cross {
-    position: relative;
-    width: 20px;
-    height: 20px;
-}
-
-button.remove-string .icon-cross:before,
-button.remove-string .icon-cross:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 2px;
-    height: 20px;
-    background: #fff;
-    border-radius: 2px;
-}
-
-button.remove-string .icon-cross:before {
-    transform: translate(-50%, -50%) rotate(45deg);
-}
-
-button.remove-string .icon-cross:after {
-    transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-button.remove-string:hover {
-    background: hsl(216, 100, 40);
+#calculate {
+    border: 1px solid #ddd;
 }
 
 table {
     width: 100%;
+    max-width: 1024px;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
+    table-layout: fixed;
 }
 
 table th, table td {
     border: 1px solid #ddd;
-    padding: 8px;
-    width: 20%;
-    text-align: left;
+    padding: 5px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+table th:first-child, table td:first-child {
+    width: 10%;
+}
+
+table th:not(:first-child), table td:not(:first-child) {
+    width: 22.5%;
 }
 
 table th {
-    background-color: #f2f2f2;
+    text-align: center;
+}
+
+table td:has(input), table td:has(button){
+    padding: 0px;
+}
+
+table input {
+    text-align: center;
 }
 
 @media (min-width: 768px) {
@@ -125,4 +109,3 @@ table th {
         flex: 2;
     }
 }
-

@@ -27,7 +27,7 @@ function addString(position) {
     newStringRow.innerHTML = `
         <tr class="string">
             <td>
-                <button class="remove-string"><span class="icon-cross"></span></button>
+                <button class="remove-string"><span class="icon-cross">✖️</span></button>
             </td>
             <td><input type="text" value=""></td>
             <td></td>
