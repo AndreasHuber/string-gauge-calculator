@@ -8,7 +8,7 @@ function addRemoveButtonListener(button) {
         if (rows.length > 2) {
             row.remove();
 
-            if ((rowIndex === 0 || rowIndex === rows.length - 1) && rows.length > 1) {
+            if (rowIndex === 0 || rowIndex === rows.length - 1) {
                 const newRow = rowIndex === 0 ? rows[1] : rows[rows.length - 2];
                 const inputField = row.querySelector('td:nth-child(3) input');
                 if (inputField) {
