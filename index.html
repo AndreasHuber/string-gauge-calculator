@@ -23,25 +23,25 @@
             </div>
             <div class="step">
                 <h2>2. Enter the details for your desired tuning:</h2>
-                <label for="new-scale-length">New scale length (in same unit as first step):</label>
-                <input type="number" id="new-scale-length" step="0.1" value="27">
                 <div id="strings">
                     <table>
                         <thead>
                             <tr>
                                 <th>String</th>
                                 <th>Note</th>
-                                <th>Type</th>
+                                <th>Scale Length</th>
                                 <th>String Gauge</th>
+                                <th>Type</th>
                             </tr>
                             <tr class="add-row">
-                                <td colspan="4"><button class="add-string add-front">+</button></td>
+                                <td colspan="5"><button class="add-string add-front">+</button></td>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="string">
                                 <td><button class="remove-string"><span class="icon-cross"></span></button></td>
                                 <td><input type="text" value="E4"></td>
+                                <td><input type="number" id="scale-length-first-string" step="0.1" value="27.0"></td>
                                 <td></td>
                                 <td></td>
                             </tr>
@@ -50,10 +50,12 @@
                                 <td><input type="text" value="A3"></td>
                                 <td></td>
                                 <td></td>
+                                <td></td>
                             </tr>
                             <tr class="string">
                                 <td><button class="remove-string"><span class="icon-cross"></span></button></td>
                                 <td><input type="text" value="D3"></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                             </tr>
@@ -62,23 +64,26 @@
                                 <td><input type="text" value="G2"></td>
                                 <td></td>
                                 <td></td>
+                                <td></td>
                             </tr>
                             <tr class="string">
                                 <td><button class="remove-string"><span class="icon-cross"></span></button></td>
                                 <td><input type="text" value="C2"></td>
                                 <td></td>
                                 <td></td>
+                                <td></td>
                             </tr>
                             <tr class="string">
                                 <td><button class="remove-string"><span class="icon-cross"></span></button></td>
                                 <td><input type="text" value="F1"></td>
+                                <td><input type="number" id="scale-length-last-string" step="0.1"></td>
                                 <td></td>
                                 <td></td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr class="add-row">
-                                <td colspan="4"><button class="add-string add-end">+</button></td>
+                                <td colspan="5"><button class="add-string add-end">+</button></td>
                             </tr>
                         </tfoot>
                     </table>
