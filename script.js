@@ -1,3 +1,9 @@
+function setupInputListeners() {
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', calculate);
+    });
+}
+
 function addRemoveButtonListener(button) {
     button.addEventListener('click', function() {
         const row = this.closest('tr');
@@ -48,6 +54,7 @@ function addString(position) {
     stringsContainer.insertBefore(newStringRow, position === 'start' ? stringsContainer.firstChild.nextSibling : stringsContainer.lastChild);
 
     addRemoveButtonListener(newStringRow.querySelector('.remove-string'));
+    setupInputListeners(); // Set up listeners for the new inputs
 }
 
 function calculate() {
@@ -123,4 +130,5 @@ document.querySelector('.add-front').addEventListener('click', function() {
     addString('start');
 });
 
-document.getElementById('calculate').addEventListener('click', calculate);
+calculate();
+setupInputListeners();

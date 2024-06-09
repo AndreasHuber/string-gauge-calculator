@@ -66,10 +66,6 @@ button:hover {
     background: #a7a7a7;
 }
 
-#calculate {
-    border: 1px solid #ddd;
-}
-
 table {
     width: 100%;
     max-width: 1024px;
