@@ -12,7 +12,14 @@ h1, h2 {
 }
 
 p {
+    margin-top: 32px;
     text-align: center;
+    margin-bottom: 32px;
+}
+
+a {
+    text-decoration: none;
+    color:rgba(0,0,0,.75);
 }
 
 .steps-container {
@@ -24,7 +31,8 @@ p {
 .step {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+    margin-bottom: 32px;
 }
 
 label {

@@ -54,7 +54,7 @@ function calculate() {
     const referenceIsWound = document.getElementById('is-wound').checked;
     const referenceGauge = parseFloat(document.getElementById('preferred-gauge').value);
     const referenceNote = document.getElementById('preferred-note').value.toUpperCase();
-    const scaleLength = parseFloat(document.getElementById('scale-length').value);
+    const referenceScaleLength = parseFloat(document.getElementById('scale-length').value);
 
     const firstScaleLength = parseFloat(document.getElementById('scale-length-first-string').value);
     const lastScaleLength = parseFloat(document.getElementById('scale-length-last-string').value);
@@ -89,7 +89,7 @@ function calculate() {
         if (targetNote) {
             const targetSemitone = getSemitoneValue(targetNote);
             const semitoneDifference = referenceSemitone - targetSemitone;
-            let recommendedGauge = referenceGauge * Math.pow(semitoneRatio, semitoneDifference) * (scaleLength / interpolatedScaleLengths[index]);
+            let recommendedGauge = referenceGauge * Math.pow(semitoneRatio, semitoneDifference) * (referenceScaleLength / interpolatedScaleLengths[index]);
 
             let type = recommendedGauge < 0.020 ? 'plain' : 'wound';
             if (referenceIsWound && type === 'plain') {
