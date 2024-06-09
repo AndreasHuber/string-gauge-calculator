@@ -70,7 +70,7 @@ table {
     width: 100%;
     max-width: 1024px;
     border-collapse: collapse;
-    margin-bottom: 0px;
+    margin-top: 8px;
     table-layout: fixed;
 }
 

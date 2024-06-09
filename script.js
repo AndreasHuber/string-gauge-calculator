@@ -54,7 +54,8 @@ function addString(position) {
     stringsContainer.insertBefore(newStringRow, position === 'start' ? stringsContainer.firstChild.nextSibling : stringsContainer.lastChild);
 
     addRemoveButtonListener(newStringRow.querySelector('.remove-string'));
-    setupInputListeners(); // Set up listeners for the new inputs
+    setupInputListeners();
+    calculate();
 }
 
 function calculate() {
@@ -66,6 +67,9 @@ function calculate() {
     const firstScaleLength = parseFloat(document.getElementById('scale-length-first-string').value);
     const lastScaleLength = parseFloat(document.getElementById('scale-length-last-string').value);
     const multiscale = !isNaN(lastScaleLength);
+    if (!multiscale) {
+        document.getElementById('scale-length-last-string').placeholder = firstScaleLength.toFixed(1);
+    }
     const stringElements = document.querySelectorAll('.string');
     
     const interpolatedScaleLengths = Array.from(stringElements, (_, i) =>
