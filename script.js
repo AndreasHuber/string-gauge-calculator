@@ -118,6 +118,31 @@ function calculate() {
 
             typeCell.textContent = type;
             resultCell.textContent = recommendedGauge.toFixed(3);
+
+            const existingInfoBox = stringElement.querySelector('.info-box');
+            if (existingInfoBox) {
+                existingInfoBox.remove();
+            }
+
+            if (recommendedGauge < 0.007) {
+                const infoBox = document.createElement('div');
+                infoBox.className = 'info-box';
+                infoBox.textContent = 'ℹ️ Tune lower?';
+
+                const closeButton = document.createElement('button');
+                closeButton.textContent = '✖️';
+                closeButton.onclick = function() {
+                    infoBox.remove();
+                };
+
+                infoBox.appendChild(closeButton);
+
+                infoBox.style.top = (resultCell.offsetTop + resultCell.offsetParent.offsetTop) + 'px';
+                infoBox.style.left = (resultCell.offsetLeft + resultCell.offsetParent.offsetLeft) + 'px';
+                infoBox.style.width = (resultCell.offsetWidth + typeCell.offsetWidth - 16) + 'px';
+
+                stringElement.appendChild(infoBox);
+            }
         }
     });
 };
