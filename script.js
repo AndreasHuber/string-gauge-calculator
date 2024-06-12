@@ -23,6 +23,10 @@ function addRemoveButtonListener(button) {
                 }
             }
         }
+
+        if (document.querySelector('.info-box')) {
+            calculate();
+        }
     });
 }
 
