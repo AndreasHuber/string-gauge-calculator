@@ -36,15 +36,13 @@ function addString(position) {
     const newStringRow = document.createElement('tr');
     newStringRow.className = 'string';
     newStringRow.innerHTML = `
-        <tr class="string">
-            <td>
-                <button class="remove-string"><span class="icon-cross">✖️</span></button>
-            </td>
-            <td><input type="text" value=""></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+        <td>
+            <button class="remove-string"><span class="icon-cross">✖️</span></button>
+        </td>
+        <td><input type="text" value=""></td>
+        <td></td>
+        <td></td>
+        <td></td>
     `;
 
     const firstRow = stringsContainer.querySelector('tr.string');
