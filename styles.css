@@ -31,16 +31,16 @@ a {
 .step {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
     margin-bottom: 32px;
 }
 
-label {
-    float: left;
+.step > label + input {
+    margin-top: 4px;
 }
 
 label:not(:has(input)) {
-    margin-top: 8px;
+    margin-top: 0;
 }
 
 input[type="number"], input[type="text"], input[type="checkbox"] {
@@ -135,4 +135,15 @@ table input {
     .step:last-child {
         flex: 2;
     }
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.radio-group label {
+    float: none;
+    margin-top: 0;
 }

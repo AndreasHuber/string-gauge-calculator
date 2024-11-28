@@ -1,3 +1,6 @@
+const MM_PER_INCH = 25.4;
+const INCH_PER_MM = 1 / MM_PER_INCH;
+
 function setupInputListeners() {
     document.querySelectorAll('input').forEach(input => {
         input.addEventListener('input', calculate);
@@ -61,6 +64,44 @@ function addString(position) {
     calculate();
 }
 
+function convertValue(value, toMM) {
+    return toMM ? value * MM_PER_INCH : value * INCH_PER_MM;
+}
+
+function setupUnitToggleListener() {
+    document.querySelectorAll('input[name="unit"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const toMM = this.value === 'mm';
+
+            const scaleLength = document.getElementById('scale-length');
+            const firstString = document.getElementById('scale-length-first-string');
+            const lastString = document.getElementById('scale-length-last-string');
+            const gauge = document.getElementById('preferred-gauge');
+
+            [scaleLength, firstString, lastString].forEach(input => {
+                if (input && input.value) {
+                    input.value = toMM ?
+                        Math.round(convertValue(parseFloat(input.value), true)) :
+                        convertValue(parseFloat(input.value), false).toFixed(1);
+                }
+                if (input && input.placeholder) {
+                    input.placeholder = toMM ?
+                        Math.round(convertValue(parseFloat(input.placeholder), true)) :
+                        convertValue(parseFloat(input.placeholder), false).toFixed(1);
+                }
+            });
+
+            if (gauge.value) {
+                gauge.value = toMM ?
+                    convertValue(parseFloat(gauge.value), true).toFixed(2) :
+                    convertValue(parseFloat(gauge.value), false).toFixed(3);
+            }
+
+            calculate();
+        });
+    });
+}
+
 function calculate() {
     const referenceIsWound = document.getElementById('is-wound').checked;
     const referenceGauge = parseFloat(document.getElementById('preferred-gauge').value);
@@ -72,8 +113,9 @@ function calculate() {
 
     const lastScaleLength = parseFloat(document.getElementById('scale-length-last-string').value);
     const multiscale = !isNaN(lastScaleLength);
+    const isMM = document.querySelector('input[name="unit"]:checked').value === 'mm';
     if (!multiscale) {
-        document.getElementById('scale-length-last-string').placeholder = firstScaleLength.toFixed(1);
+        document.getElementById('scale-length-last-string').placeholder = firstScaleLength.toFixed(isMM ? 0 : 1);
     }
     const stringElements = document.querySelectorAll('.string');
     
@@ -108,7 +150,11 @@ function calculate() {
         const semitoneDifference = referenceSemitone - targetSemitone;
         let recommendedGauge = referenceGauge * Math.pow(semitoneRatio, semitoneDifference) * (referenceScaleLength / interpolatedScaleLengths[index]);
 
-        let type = recommendedGauge < 0.020 ? 'plain' : 'wound';
+        const thresholdInches = 0.020;
+        const thresholdMM = thresholdInches * MM_PER_INCH;  // ~0.508mm
+        const threshold = isMM ? thresholdMM : thresholdInches;
+        
+        let type = recommendedGauge < threshold ? 'plain' : 'wound';
         if (referenceIsWound && type === 'plain') {
             recommendedGauge /= 1.2;
         } else if (!referenceIsWound && type === 'wound') {
@@ -119,11 +165,11 @@ function calculate() {
         const resultCell = stringElement.querySelector('td:nth-child(4)');
         const scaleLengthCell = stringElement.querySelector('td:nth-child(3)');
         if (!scaleLengthCell.querySelector('input')) {
-            scaleLengthCell.textContent = interpolatedScaleLengths[index].toFixed(1);
+            scaleLengthCell.textContent = interpolatedScaleLengths[index].toFixed(isMM ? 0 : 1);
         }
 
         typeCell.textContent = type;
-        resultCell.textContent = recommendedGauge.toFixed(3);
+        resultCell.textContent = recommendedGauge.toFixed(isMM ? 2 : 3);
 
         const existingInfoBox = stringElement.querySelector('.info-box');
         if (existingInfoBox) {
@@ -166,3 +212,4 @@ document.querySelector('.add-front').addEventListener('click', function() {
 
 calculate();
 setupInputListeners();
+setupUnitToggleListener();
