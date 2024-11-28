@@ -11,22 +11,22 @@ function addRemoveButtonListener(button) {
         const rows = Array.from(tableBody.querySelectorAll('tr.string'));
         const rowIndex = rows.indexOf(row);
 
-        if (rows.length > 2) {
-            row.remove();
+        if (rows.length <= 2) return;
 
-            if (rowIndex === 0 || rowIndex === rows.length - 1) {
-                const newRow = rowIndex === 0 ? rows[1] : rows[rows.length - 2];
-                const inputField = row.querySelector('td:nth-child(3) input');
-                if (inputField) {
-                    newRow.querySelector('td:nth-child(3)').textContent = '';
-                    newRow.querySelector('td:nth-child(3)').appendChild(inputField);
-                }
-            }
+        row.remove();
 
-            const lastScaleLength = parseFloat(document.getElementById('scale-length-last-string').value);
-            if (!isNaN(lastScaleLength) || document.querySelector('.info-box')) {
-                calculate();
+        if (rowIndex === 0 || rowIndex === rows.length - 1) {
+            const newRow = rowIndex === 0 ? rows[1] : rows[rows.length - 2];
+            const inputField = row.querySelector('td:nth-child(3) input');
+            if (inputField) {
+                newRow.querySelector('td:nth-child(3)').textContent = '';
+                newRow.querySelector('td:nth-child(3)').appendChild(inputField);
             }
+        }
+
+        const lastScaleLength = parseFloat(document.getElementById('scale-length-last-string').value);
+        if (!isNaN(lastScaleLength) || document.querySelector('.info-box')) {
+            calculate();
         }
     });
 }
@@ -68,8 +68,10 @@ function calculate() {
     const referenceGauge = parseFloat(document.getElementById('preferred-gauge').value);
     const referenceNote = document.getElementById('preferred-note').value.toUpperCase();
     const referenceScaleLength = parseFloat(document.getElementById('scale-length').value);
-
     const firstScaleLength = parseFloat(document.getElementById('scale-length-first-string').value);
+
+    if (!referenceGauge || !referenceNote || !referenceScaleLength || !firstScaleLength) return;
+
     const lastScaleLength = parseFloat(document.getElementById('scale-length-last-string').value);
     const multiscale = !isNaN(lastScaleLength);
     if (!multiscale) {
@@ -102,52 +104,52 @@ function calculate() {
 
     stringElements.forEach((stringElement, index) => {
         const targetNote = stringElement.querySelector('input').value.toUpperCase();
-        if (targetNote) {
-            const targetSemitone = getSemitoneValue(targetNote);
-            const semitoneDifference = referenceSemitone - targetSemitone;
-            let recommendedGauge = referenceGauge * Math.pow(semitoneRatio, semitoneDifference) * (referenceScaleLength / interpolatedScaleLengths[index]);
+        if (!targetNote) return;
 
-            let type = recommendedGauge < 0.020 ? 'plain' : 'wound';
-            if (referenceIsWound && type === 'plain') {
-                recommendedGauge /= 1.2;
-            } else if (!referenceIsWound && type === 'wound') {
-                recommendedGauge *= 1.2;
-            }
+        const targetSemitone = getSemitoneValue(targetNote);
+        const semitoneDifference = referenceSemitone - targetSemitone;
+        let recommendedGauge = referenceGauge * Math.pow(semitoneRatio, semitoneDifference) * (referenceScaleLength / interpolatedScaleLengths[index]);
 
-            const typeCell = stringElement.querySelector('td:nth-child(5)');
-            const resultCell = stringElement.querySelector('td:nth-child(4)');
-            const scaleLengthCell = stringElement.querySelector('td:nth-child(3)');
-            if (!scaleLengthCell.querySelector('input')) {
-                scaleLengthCell.textContent = interpolatedScaleLengths[index].toFixed(1);
-            }
+        let type = recommendedGauge < 0.020 ? 'plain' : 'wound';
+        if (referenceIsWound && type === 'plain') {
+            recommendedGauge /= 1.2;
+        } else if (!referenceIsWound && type === 'wound') {
+            recommendedGauge *= 1.2;
+        }
 
-            typeCell.textContent = type;
-            resultCell.textContent = recommendedGauge.toFixed(3);
+        const typeCell = stringElement.querySelector('td:nth-child(5)');
+        const resultCell = stringElement.querySelector('td:nth-child(4)');
+        const scaleLengthCell = stringElement.querySelector('td:nth-child(3)');
+        if (!scaleLengthCell.querySelector('input')) {
+            scaleLengthCell.textContent = interpolatedScaleLengths[index].toFixed(1);
+        }
 
-            const existingInfoBox = stringElement.querySelector('.info-box');
-            if (existingInfoBox) {
-                existingInfoBox.remove();
-            }
+        typeCell.textContent = type;
+        resultCell.textContent = recommendedGauge.toFixed(3);
 
-            if (recommendedGauge < 0.007) {
-                const infoBox = document.createElement('div');
-                infoBox.className = 'info-box';
-                infoBox.textContent = 'ℹ️ Tune lower?';
+        const existingInfoBox = stringElement.querySelector('.info-box');
+        if (existingInfoBox) {
+            existingInfoBox.remove();
+        }
 
-                const closeButton = document.createElement('button');
-                closeButton.textContent = '✖️';
-                closeButton.onclick = function() {
-                    infoBox.remove();
-                };
+        if (recommendedGauge < 0.007) {
+            const infoBox = document.createElement('div');
+            infoBox.className = 'info-box';
+            infoBox.textContent = 'ℹ️ Tune lower?';
 
-                infoBox.appendChild(closeButton);
+            const closeButton = document.createElement('button');
+            closeButton.textContent = '✖️';
+            closeButton.onclick = function() {
+                infoBox.remove();
+            };
 
-                infoBox.style.top = (resultCell.offsetTop + resultCell.offsetParent.offsetTop) + 'px';
-                infoBox.style.left = (resultCell.offsetLeft + resultCell.offsetParent.offsetLeft) + 'px';
-                infoBox.style.width = (resultCell.offsetWidth + typeCell.offsetWidth - 16) + 'px';
+            infoBox.appendChild(closeButton);
 
-                stringElement.appendChild(infoBox);
-            }
+            infoBox.style.top = (resultCell.offsetTop + resultCell.offsetParent.offsetTop) + 'px';
+            infoBox.style.left = (resultCell.offsetLeft + resultCell.offsetParent.offsetLeft) + 'px';
+            infoBox.style.width = (resultCell.offsetWidth + typeCell.offsetWidth - 16) + 'px';
+
+            stringElement.appendChild(infoBox);
         }
     });
 };
