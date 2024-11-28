@@ -22,10 +22,11 @@ function addRemoveButtonListener(button) {
                     newRow.querySelector('td:nth-child(3)').appendChild(inputField);
                 }
             }
-        }
 
-        if (document.querySelector('.info-box')) {
-            calculate();
+            const lastScaleLength = parseFloat(document.getElementById('scale-length-last-string').value);
+            if (!isNaN(lastScaleLength) || document.querySelector('.info-box')) {
+                calculate();
+            }
         }
     });
 }
