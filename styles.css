@@ -28,6 +28,28 @@ a {
     gap: 20px;
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+    .steps-container {
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
+    .step {
+        flex: 1 1 calc(50% - 10px);  /* 50% width minus half the gap */
+    }
+    .step:last-child {
+        flex-basis: 100%;  /* Makes the presets take full width below */
+    }
+}
+
+@media (min-width: 1024px) {
+    .steps-container {
+        flex-direction: row;
+    }
+    .step {
+        flex: 1;
+    }
+}
+
 .step {
     display: flex;
     flex-direction: column;
@@ -124,19 +146,6 @@ table input {
     margin-left: 6px;
 }
 
-@media (min-width: 768px) {
-    .steps-container {
-        flex-direction: row;
-        gap: 20px;
-    }
-    .step:first-child {
-        flex: 1;
-    }
-    .step:last-child {
-        flex: 2;
-    }
-}
-
 .radio-group {
     display: flex;
     align-items: center;
@@ -158,4 +167,22 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.presets-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.preset {
+    width: 100%;
+    padding: 8px;
+    background: #f2f2f2;
+    border: none;
+    cursor: pointer;
+}
+
+.preset:hover {
+    background: #a7a7a7;
 }

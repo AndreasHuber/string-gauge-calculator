@@ -13,7 +13,7 @@
 <body>
     <div class="container">
         <h1>🎸 Guitar String Gauge Calculator</h1>
-        <p>Do you want to use an unconventional tuning, extended range or baritone guitar and are not sure what steel string gauges to choose for it? <br> Then follow these steps to get a rough idea what strings you need:</p>
+        <p>Do you want to use an unconventional tuning, extended range or baritone guitar and are not sure what steel string gauges to choose for it? <br> Then follow these steps or start with a preset to get a rough idea what strings you need:</p>
         <div class="steps-container">
             <div class="step">
                 <h2>1. Enter for a string that you like the feel of the...</h2>
@@ -54,7 +54,7 @@
                             <tr class="string">
                                 <td><button class="remove-string"><span class="icon-cross">✖️</span></button></td>
                                 <td><input type="text" value="E4"></td>
-                                <td><input type="number" id="scale-length-first-string" step="0.1" value="27.0"></td>
+                                <td><input type="number" id="scale-length-first-string" value="27.0"></td>
                                 <td></td>
                                 <td></td>
                             </tr>
@@ -89,7 +89,7 @@
                             <tr class="string">
                                 <td><button class="remove-string"><span class="icon-cross">✖️</span></button></td>
                                 <td><input type="text" value="F1"></td>
-                                <td><input type="number" id="scale-length-last-string" step="0.1" placeholder="27.0"></td>
+                                <td><input type="number" id="scale-length-last-string" placeholder="27.0"></td>
                                 <td></td>
                                 <td></td>
                             </tr>
@@ -100,6 +100,23 @@
                             </tr>
                         </tfoot>
                     </table>
+                </div>
+            </div>
+            <div class="step">
+                <h2>Presets:</h2>
+                <div class="presets-container">
+                    <button class="preset" data-preset="8-string">8 string guitar</button>
+                    <button class="preset" data-preset="meshugga">Meshugga` guitar</button>
+                    <button class="preset" data-preset="5-string-bass">5 string bass guitar</button>
+                    <button class="preset" data-preset="bass-with-f#">Multiscale bass w/ F#0</button>
+                    <button class="preset" data-preset="drop-c">Drop C guitar</button>
+                    <button class="preset" data-preset="drop-c-bass">Drop C bass guitar</button>
+                    <button class="preset" data-preset="fifths-guitar">Fifths tuned guitar</button>
+                    <button class="preset" data-preset="fifths-multiscale">Multiscale 5ths tuned gtr.</button>
+                    <button class="preset" data-preset="fifths-with-b">Fifths w/ B3</button>
+                    <button class="preset" data-preset="fifths-bass">Fifths tuned bass guitar</button>
+                    <button class="preset" data-preset="fifths-bass-multiscale">Multiscale 5ths tuned bass</button>
+                    <button class="preset" data-preset="fifths-bass-f0">5ths tuned multiscale bass w/ F0</button>
                 </div>
             </div>
         </div>

@@ -1,6 +1,73 @@
 const MM_PER_INCH = 25.4;
 const INCH_PER_MM = 1 / MM_PER_INCH;
 
+const PRESETS = {
+    '8-string': {
+        reference: { scale: 25.5, gauge: 0.042, note: 'E2', type: 'wound' },
+        strings: ['E4', 'B3', 'G3', 'D3', 'A2', 'E2', 'B1', 'F#1'],
+        scale: 27
+    },
+    '5-string-bass': {
+        reference: { scale: 34, gauge: 0.100, note: 'E1', type: 'wound' },
+        strings: ['G2', 'D2', 'A1', 'E1', 'B0'],
+        scale: 35
+    },
+    'drop-c': {
+        reference: { scale: 25.5, gauge: 0.042, note: 'E2', type: 'wound' },
+        strings: ['D4', 'A3', 'F3', 'C3', 'G2', 'C2'],
+        scale: 27
+    },
+    'drop-c-bass': {
+        reference: { scale: 34, gauge: 0.100, note: 'E1', type: 'wound' },
+        strings: ['F2', 'C2', 'G1', 'C1'],
+        scale: 34
+    },
+    'fifths-guitar': {
+        reference: { scale: 25.5, gauge: 0.042, note: 'E2', type: 'wound' },
+        strings: ['E4', 'A3', 'D3', 'G2', 'C2', 'F1'],
+        scale: 27
+    },
+    'fifths-bass': {
+        reference: { scale: 34, gauge: 0.100, note: 'E1', type: 'wound' },
+        strings: ['A2', 'D2', 'G1', 'C1'],
+        scale: 34
+    },
+    'bass-with-f#': {
+        reference: { scale: 34, gauge: 0.100, note: 'E1', type: 'wound' },
+        strings: ['G2', 'D2', 'A1', 'E1', 'B0', 'F#0'],
+        scale: 33.25,
+        lastScale: 37
+    },
+    'meshugga': {
+        reference: { scale: 25.5, gauge: 0.042, note: 'E2', type: 'wound' },
+        strings: ['D#4', 'A#3', 'F#3', 'C#3', 'G#2', 'D#2', 'A#1', 'F1'],
+        scale: 29.4
+    },
+    'fifths-multiscale': {
+        reference: { scale: 25.5, gauge: 0.042, note: 'E2', type: 'wound' },
+        strings: ['E4', 'A3', 'D3', 'G2', 'C2', 'F1'],
+        scale: 25.5,
+        lastScale: 27.5
+    },
+    'fifths-with-b': {
+        reference: { scale: 25.5, gauge: 0.042, note: 'E2', type: 'wound' },
+        strings: ['B3', 'E4', 'A3', 'D3', 'G2', 'C2', 'F1'],
+        scale: 27
+    },
+    'fifths-bass-f0': {
+        reference: { scale: 34, gauge: 0.100, note: 'E1', type: 'wound' },
+        strings: ['A2', 'D2', 'G1', 'C1', 'F0'],
+        scale: 34,
+        lastScale: 37
+    },
+    'fifths-bass-multiscale': {
+        reference: { scale: 34, gauge: 0.100, note: 'E1', type: 'wound' },
+        strings: ['E3', 'A2', 'D2', 'G1', 'C1'],
+        scale: 33,
+        lastScale: 35
+    }
+};
+
 function setupInputListeners() {
     document.querySelectorAll('input').forEach(input => {
         input.addEventListener('input', calculate);
@@ -198,6 +265,60 @@ function calculate() {
     });
 };
 
+function applyPreset(preset) {
+    const data = PRESETS[preset];
+    const isMM = document.querySelector('input[name="unit"]:checked').value === 'mm';
+
+    // Set reference values
+    document.getElementById('scale-length').value = isMM ?
+        (data.reference.scale * MM_PER_INCH).toFixed(0) :
+        data.reference.scale.toFixed(1);
+    document.getElementById('preferred-gauge').value = isMM ?
+        (data.reference.gauge * MM_PER_INCH).toFixed(2) :
+        data.reference.gauge.toFixed(3);
+    document.getElementById('preferred-note').value = data.reference.note;
+    document.getElementById(data.reference.type === 'wound' ? 'is-wound' : 'is-plain').checked = true;
+
+    // Clear existing strings
+    const tbody = document.querySelector('#strings tbody');
+    while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+    }
+
+    // Add new strings
+    data.strings.forEach((note, index) => {
+        const row = document.createElement('tr');
+        row.className = 'string';
+
+        let scaleInput = '';
+        if (index === 0) {
+            scaleInput = `<input type="number" id="scale-length-first-string"
+                step="0.1" value="${isMM ? (data.scale * MM_PER_INCH).toFixed(0) : data.scale.toFixed(1)}">`;
+        } else if (index === data.strings.length - 1) {
+            scaleInput = `<input type="number" id="scale-length-last-string"
+                ${data.lastScale ?
+                    `value="${isMM ? (data.lastScale * MM_PER_INCH).toFixed(0) : data.lastScale.toFixed(1)}"` :
+                    `placeholder="${isMM ? (data.scale * MM_PER_INCH).toFixed(0) : data.scale.toFixed(1)}"`}>`;
+        }
+    
+        row.innerHTML = `
+            <td><button class="remove-string"><span class="icon-cross">✖️</span></button></td>
+            <td><input type="text" value="${note}"></td>
+            <td>${scaleInput}</td>
+            <td></td>
+            <td></td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    // Reattach listeners and calculate
+    document.querySelectorAll('.remove-string').forEach(button => {
+        addRemoveButtonListener(button);
+    });
+    setupInputListeners();
+    calculate();
+}
+
 document.querySelectorAll('.remove-string').forEach(button => {
     addRemoveButtonListener(button);
 });
@@ -208,6 +329,10 @@ document.querySelector('.add-end').addEventListener('click', function() {
 
 document.querySelector('.add-front').addEventListener('click', function() {
     addString('start');
+});
+
+document.querySelectorAll('.preset').forEach(button => {
+    button.addEventListener('click', () => applyPreset(button.dataset.preset));
 });
 
 calculate();
