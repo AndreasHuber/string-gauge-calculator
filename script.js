@@ -282,15 +282,13 @@ function applyPreset(preset) {
     // Get current and target string counts
     const currentStrings = document.querySelectorAll('.string');
     const targetStringCount = data.strings.length;
-
+    
     // Add or remove strings to match the target count
     if (currentStrings.length > targetStringCount) {
-        // Remove strings from the end until we reach target count
         for (let i = currentStrings.length - 1; i >= targetStringCount; i--) {
             currentStrings[i].querySelector('.remove-string').click();
         }
     } else if (currentStrings.length < targetStringCount) {
-        // Add strings until we reach target count
         for (let i = currentStrings.length; i < targetStringCount; i++) {
             addString('end');
         }
@@ -300,14 +298,20 @@ function applyPreset(preset) {
     const strings = document.querySelectorAll('.string');
     data.strings.forEach((note, i) => {
         strings[i].querySelector('td:nth-child(2) input').value = note;
-
+        
         // Set scale lengths for first and last string
         if (i === 0) {
             const scaleInput = document.getElementById('scale-length-first-string');
             scaleInput.value = isMM ? (data.scale * MM_PER_INCH).toFixed(0) : data.scale.toFixed(1);
-        } else if (i === data.strings.length - 1 && data.lastScale) {
+        } else if (i === data.strings.length - 1) {
             const scaleInput = document.getElementById('scale-length-last-string');
-            scaleInput.value = isMM ? (data.lastScale * MM_PER_INCH).toFixed(0) : data.lastScale.toFixed(1);
+            if (data.lastScale) {
+                scaleInput.value = isMM ? (data.lastScale * MM_PER_INCH).toFixed(0) : data.lastScale.toFixed(1);
+            } else {
+                // Clear or set to first string's scale length for non-multiscale
+                scaleInput.value = '';
+                scaleInput.placeholder = isMM ? (data.scale * MM_PER_INCH).toFixed(0) : data.scale.toFixed(1);
+            }
         }
     });
 
