@@ -279,43 +279,38 @@ function applyPreset(preset) {
     document.getElementById('preferred-note').value = data.reference.note;
     document.getElementById(data.reference.type === 'wound' ? 'is-wound' : 'is-plain').checked = true;
 
-    // Clear existing strings
-    const tbody = document.querySelector('#strings tbody');
-    while (tbody.firstChild) {
-        tbody.removeChild(tbody.firstChild);
+    // Get current and target string counts
+    const currentStrings = document.querySelectorAll('.string');
+    const targetStringCount = data.strings.length;
+
+    // Add or remove strings to match the target count
+    if (currentStrings.length > targetStringCount) {
+        // Remove strings from the end until we reach target count
+        for (let i = currentStrings.length - 1; i >= targetStringCount; i--) {
+            currentStrings[i].querySelector('.remove-string').click();
+        }
+    } else if (currentStrings.length < targetStringCount) {
+        // Add strings until we reach target count
+        for (let i = currentStrings.length; i < targetStringCount; i++) {
+            addString('end');
+        }
     }
 
-    // Add new strings
-    data.strings.forEach((note, index) => {
-        const row = document.createElement('tr');
-        row.className = 'string';
+    // Update all string values and scale lengths
+    const strings = document.querySelectorAll('.string');
+    data.strings.forEach((note, i) => {
+        strings[i].querySelector('td:nth-child(2) input').value = note;
 
-        let scaleInput = '';
-        if (index === 0) {
-            scaleInput = `<input type="number" id="scale-length-first-string"
-                step="0.1" value="${isMM ? (data.scale * MM_PER_INCH).toFixed(0) : data.scale.toFixed(1)}">`;
-        } else if (index === data.strings.length - 1) {
-            scaleInput = `<input type="number" id="scale-length-last-string"
-                ${data.lastScale ?
-                    `value="${isMM ? (data.lastScale * MM_PER_INCH).toFixed(0) : data.lastScale.toFixed(1)}"` :
-                    `placeholder="${isMM ? (data.scale * MM_PER_INCH).toFixed(0) : data.scale.toFixed(1)}"`}>`;
+        // Set scale lengths for first and last string
+        if (i === 0) {
+            const scaleInput = document.getElementById('scale-length-first-string');
+            scaleInput.value = isMM ? (data.scale * MM_PER_INCH).toFixed(0) : data.scale.toFixed(1);
+        } else if (i === data.strings.length - 1 && data.lastScale) {
+            const scaleInput = document.getElementById('scale-length-last-string');
+            scaleInput.value = isMM ? (data.lastScale * MM_PER_INCH).toFixed(0) : data.lastScale.toFixed(1);
         }
-    
-        row.innerHTML = `
-            <td><button class="remove-string"><span class="icon-cross">✖️</span></button></td>
-            <td><input type="text" value="${note}"></td>
-            <td>${scaleInput}</td>
-            <td></td>
-            <td></td>
-        `;
-        tbody.appendChild(row);
     });
 
-    // Reattach listeners and calculate
-    document.querySelectorAll('.remove-string').forEach(button => {
-        addRemoveButtonListener(button);
-    });
-    setupInputListeners();
     calculate();
 }
 
@@ -331,10 +326,10 @@ document.querySelector('.add-front').addEventListener('click', function() {
     addString('start');
 });
 
-document.querySelectorAll('.preset').forEach(button => {
-    button.addEventListener('click', () => applyPreset(button.dataset.preset));
-});
-
 calculate();
 setupInputListeners();
 setupUnitToggleListener();
+
+document.querySelectorAll('.preset').forEach(button => {
+    button.addEventListener('click', () => applyPreset(button.dataset.preset));
+});
