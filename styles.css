@@ -186,3 +186,8 @@ input::-webkit-inner-spin-button {
 .preset:hover {
     background: #a7a7a7;
 }
+
+.small-digit {
+    font-size: 0.7em;
+    vertical-align: baseline;
+}

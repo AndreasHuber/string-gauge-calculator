@@ -236,7 +236,10 @@ function calculate() {
         }
 
         typeCell.textContent = type;
-        resultCell.textContent = recommendedGauge.toFixed(isMM ? 2 : 3);
+        const value = recommendedGauge.toFixed(4);
+        resultCell.innerHTML = isMM ?
+            value :
+            `${value.slice(0, -1)}<span class="small-digit">${value.slice(-1)}</span>`;
 
         const existingInfoBox = stringElement.querySelector('.info-box');
         if (existingInfoBox) {
